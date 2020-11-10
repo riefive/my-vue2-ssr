@@ -2,14 +2,18 @@ const express = require('express')
 const path = require('path')
 const { createBundleRenderer } = require('vue-server-renderer')
 const env = process.env.NODE_ENV || 'development'
-const target = process.env.TARGET || 'spa'
+const target = process.env.VUE_TARGET || 'spa'
+const test = process.env.VUE_TEST || false
+const title = process.env.TITLE
 const cwd = process.cwd() || __dirname
 
-let configFile = '.env'
-if (['development', 'production', 'staging'].includes(env)) {
-    configFile = `.env.${env}`
+if (!test) {
+    let configFile = '.env'
+    if (['development', 'production', 'staging'].includes(env)) {
+        configFile = `.env.${env}`
+    }
+    require('dotenv').config({ path: path.resolve(cwd, configFile) })
 }
-require('dotenv').config({ path: path.resolve(cwd, configFile) })
 
 const server = express()
 const port = process.env.PORT || 3000
@@ -18,8 +22,8 @@ const messages = {
     internalError: 'Internal server error'
 }
 
+server.use(express.static(path.resolve(cwd, './dist')))
 if (target === 'spa') {
-    server.use(express.static(path.resolve(cwd, './dist')))
     server.get('*', (req, res) => {
         res.status(404).send(messages.notFound)
     })
@@ -29,10 +33,6 @@ if (target === 'spa') {
         runInNewContext: false,
         clientManifest: require('./dist/vue-ssr-client-manifest.json')
     })
-    server.use('/css', express.static(path.resolve(cwd, 'dist', 'css')))
-    server.use('/img', express.static(path.resolve(cwd, 'dist', 'img')))
-    server.use('/js', express.static(path.resolve(cwd, 'dist', 'js')))
-    server.use('/favicon.ico', express.static(path.resolve(cwd, 'dist', 'favicon.ico')))
     server.get('*', async (req, res) => {
         const context = {
             url: req.url,
@@ -55,15 +55,15 @@ if (target === 'spa') {
             <!DOCTYPE html>
             <html lang="en">
             <head>
-            <title>${process.env.TITLE || context.title}</title>
+            <title>${title || context.title}</title>
             <link rel="stylesheet" href="${manifest['app.css']}" />
             ${context.meta}
             </head>
             <body>
             ${content}
             </body>
-            </html>`.trim()
-            
+            </html>`.replace(/\s{2,}\</g, '\n<').trim()
+
             res.end(html)
         }
     })

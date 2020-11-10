@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "build:ssr": "cross-env SSR=true vue-cli-service build",
-    "generate": "yarn build && yarn build:ssr",
+    "build:spa": "vue-cli-service build",
+    "build:ssr": "export SSR=true && vue-cli-service build",
+    "build": "yarn build:spa && yarn build:ssr",
+    "run:spa": "dotenv -e .env.test.spa node index",
+    "run:ssr": "dotenv -e .env.test.ssr node index",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
@@ -25,7 +27,7 @@
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/test-utils": "^1.0.3",
-    "cross-env": "^7.0.2",
+    "dotenv-cli": "^4.0.0",
     "node-sass": "^4.12.0",
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11",

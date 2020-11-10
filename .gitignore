@@ -9,6 +9,8 @@ node_modules
 .env.development
 .env.production
 .env.staging
+.env.test.spa
+.env.test.ssr
 .env.local
 .env.*.local
 
