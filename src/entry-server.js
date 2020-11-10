@@ -8,6 +8,6 @@ export default context => {
             const matchedComponents = router.getMatchedComponents()
             if (!matchedComponents.length) { return reject({ code: 404 }) }
             resolve(app)
-        })
-    }, reject)
+        }, reject)
+    })
 }
