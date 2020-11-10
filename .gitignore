@@ -2,6 +2,7 @@
 node_modules
 /dist
 /bundle
+/.html
 
 
 # local env files

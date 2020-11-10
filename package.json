@@ -9,6 +9,8 @@
     "build": "yarn build:spa && yarn build:ssr",
     "run:spa": "dotenv -e .env.test.spa node index",
     "run:ssr": "dotenv -e .env.test.ssr node index",
+    "start:dev": "dotenv -e .env node index",
+    "start:production": "node build && cd .html && yarn install --production=true && dotenv -e .env node index",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
@@ -27,8 +29,10 @@
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/test-utils": "^1.0.3",
+    "cpx": "^1.5.0",
     "dotenv-cli": "^4.0.0",
     "node-sass": "^4.12.0",
+    "rimraf": "^3.0.2",
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11",
     "webpack-manifest-plugin": "^2.2.0",
