@@ -3,7 +3,7 @@ const path = require('path')
 const cpx = require('cpx')
 const rimraf = require('rimraf')
 
-const outputName = '.html'
+const outputName = '.appview'
 const outputPath = `./${outputName}`
 const cwd = process.cwd() || __dirname
 const package = require('./package.json')
@@ -35,4 +35,7 @@ setTimeout(() => {
     cpx.copySync('./dist/**', outputPath + '/dist')
     cpx.copySync('./index.js', outputPath)
     cpx.copySync('./.env', outputPath)
+    cpx.copySync('./.env.development', outputPath)
+    cpx.copySync('./.env.production', outputPath)
+    cpx.copySync('./.env.staging', outputPath)
 }, 1000)

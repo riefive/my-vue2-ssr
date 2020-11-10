@@ -2,7 +2,7 @@
 node_modules
 /dist
 /bundle
-/.app
+/.appview
 
 
 # local env files
