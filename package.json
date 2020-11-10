@@ -7,6 +7,7 @@
     "build:spa": "vue-cli-service build",
     "build:ssr": "export SSR=true && vue-cli-service build",
     "build": "yarn build:spa && yarn build:ssr",
+    "clear": "rimraf .appview && rimraf bundle && rimraf dist",
     "run:spa": "dotenv -e .env.test.spa node index",
     "run:ssr": "dotenv -e .env.test.ssr node index",
     "start:dev": "dotenv -e .env node index",
@@ -37,5 +38,10 @@
     "vue-template-compiler": "^2.6.11",
     "webpack-manifest-plugin": "^2.2.0",
     "webpack-node-externals": "^2.5.2"
-  }
+  },
+  "author": {
+    "name": "riefive",
+    "email": "rie.five@gmail.com"
+  },
+  "license": "ISC"
 }
