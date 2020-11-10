@@ -2,13 +2,11 @@
 node_modules
 /dist
 /bundle
-/.html
+/.app
 
 
 # local env files
-.env
-.env.test.spa
-.env.test.ssr
+.env.test.*
 .env.local
 .env.*.local
 
