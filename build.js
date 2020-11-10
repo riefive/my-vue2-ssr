@@ -17,20 +17,16 @@ const project = Object.assign({
     }
 })
 
-Object.assign(project, {
-    scripts: package.scripts,
-    dependencies: package.dependencies 
-})
+Object.assign(project, { dependencies: package.dependencies })
+const content = JSON.stringify(project, null, 4)
+const filedir = path.resolve(cwd, outputName, 'package.json')
+const mkdir = path.dirname(filedir)
 
 if (fs.existsSync(outputPath)) {
     rimraf(outputPath, (err) => { 
         if (err) { console.log(err) }
     })
 }
-
-const content = JSON.stringify(project, null, 4)
-const filedir = path.resolve(cwd, outputName, 'package.json')
-const mkdir = path.dirname(filedir)
 
 setTimeout(() => {
     fs.mkdirSync(mkdir, { recursive:true })
