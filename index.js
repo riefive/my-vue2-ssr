@@ -1,51 +1,74 @@
 const express = require('express')
 const path = require('path')
 const { createBundleRenderer } = require('vue-server-renderer')
-const mode = process.env.MODE || 'standart'
+const env = process.env.NODE_ENV || 'development'
+const target = process.env.TARGET || 'spa'
+const cwd = process.cwd() || __dirname
 
-const port = 3000
+let configFile = '.env'
+if (['development', 'production', 'staging'].includes(env)) {
+    configFile = `.env.${env}`
+}
+require('dotenv').config({ path: path.resolve(cwd, configFile) })
+
 const server = express()
+const port = process.env.PORT || 3000
+const messages = {
+    notFound: 'Page not found',
+    internalError: 'Internal server error'
+}
 
-server.use( express.static(path.resolve(__dirname, './dist')))
-
-if (mode === 'plugin') {
-    const renderer = createBundleRenderer(require('./dist-ssr/vue-ssr-server-bundle.json'), {
+if (target === 'spa') {
+    server.use(express.static(path.resolve(cwd, './dist')))
+    server.get('*', (req, res) => {
+        res.status(404).send(messages.notFound)
+    })
+} else {
+    const manifest = require('./bundle/ssr-manifest.json')
+    const renderer = createBundleRenderer(require('./bundle/vue-ssr-server-bundle.json'), {
         runInNewContext: false,
         clientManifest: require('./dist/vue-ssr-client-manifest.json')
     })
+    server.use('/css', express.static(path.resolve(cwd, 'dist', 'css')))
+    server.use('/img', express.static(path.resolve(cwd, 'dist', 'img')))
+    server.use('/js', express.static(path.resolve(cwd, 'dist', 'js')))
+    server.use('/favicon.ico', express.static(path.resolve(cwd, 'dist', 'favicon.ico')))
     server.get('*', async (req, res) => {
-        const context = { url: req.url }
-        const [err, html] = await renderer.renderToString(context).then(v => [null, v]).catch(e => [e, null])
+        const context = {
+            url: req.url,
+            title: 'Vue SSR',
+            meta: `
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="keyword" content="vue,ssr">
+            <meta name="description" content="vue srr demo">`.trim()
+        }
+        const [err, content] = await renderer.renderToString(context).then(v => [null, v]).catch(e => [e, null])
         if (err) {
             if (err.code === 404) {
-                res.status(404).end('Page not found')
+                res.status(404).end(messages.notFound)
             } else {
-                res.status(500).end('Internal Server Error')
+                res.status(500).end(messages.internalError)
             }
         } else {
+            const html = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+            <title>${process.env.TITLE || context.title}</title>
+            <link rel="stylesheet" href="${manifest['app.css']}" />
+            ${context.meta}
+            </head>
+            <body>
+            ${content}
+            </body>
+            </html>`.trim()
+            
             res.end(html)
         }
-        /*
-        let html
-        try {
-            html = await renderer.renderToString(context)
-        } catch (error) {
-            if (error.code === 404) {
-                return res.status(404).send('404 | Page Not Found')
-            }
-            return res.status(500).send('500 | Internal Server Error')
-        }
-        res.end(html)
-        */
     })
-} else {
-    const manifest = require('./dist-ssr/ssr-manifest.json')
-    const appPath = manifest['app.js']
-    const appFile = path.resolve(__dirname, 'dist-ssr') + appPath
-    const createApp = require(appFile).default
-    createApp(context).then(app => {
-        console.log(app)
-    }).catch(err => console.log(err))
 }
 
-server.listen(port, () => console.log(`Listening on: ${port}`))
+server.listen(port, () => { 
+    console.log(`Listening on: ${port} | env: ${env} | target: ${target}`)
+})

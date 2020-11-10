@@ -5,7 +5,7 @@ const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 
 module.exports = {
-    outputDir: path.resolve(__dirname, !process.env.SSR ? 'dist' : 'dist-ssr'),
+    outputDir: path.resolve(__dirname, !process.env.SSR ? 'dist' : 'bundle'),
     chainWebpack: webpackConfig => {
         if (!process.env.SSR) {
             webpackConfig.entry('app').clear().add('./src/entry-client.js')

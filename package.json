@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "build:ssr": "cross-env SSR=true vue-cli-service build",
+    "generate": "yarn build && yarn build:ssr",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
