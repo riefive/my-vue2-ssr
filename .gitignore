@@ -7,9 +7,6 @@ node_modules
 
 # local env files
 .env
-.env.development
-.env.production
-.env.staging
 .env.test.spa
 .env.test.ssr
 .env.local
