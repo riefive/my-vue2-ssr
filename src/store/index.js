@@ -6,10 +6,14 @@ import ModuleLayout from './module-layout'
 
 Vue.use(Vuex)
 
-const vuexLocal = new VuexPersistence({
-    storage: window.localStorage,
-    modules: ['breakpoint', 'layout']
-})
+let plugins = []
+if (process.browser) {
+    const vuexLocal = new VuexPersistence({
+        storage: window.localStorage,
+        modules: ['breakpoint', 'layout']
+    })
+    plugins.push(vuexLocal.plugin)
+}
 
 export default new Vuex.Store({
     state: {
@@ -22,5 +26,5 @@ export default new Vuex.Store({
         breakpoint: ModuleBreakpoint,
         layout: ModuleLayout
     },
-    plugins: [vuexLocal.plugin]
+    plugins
 })

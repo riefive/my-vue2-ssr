@@ -6,6 +6,15 @@ const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 
 module.exports = {
     outputDir: path.resolve(__dirname, !process.env.SSR ? 'dist' : 'bundle'),
+    css: {
+        requireModuleExtension: true,
+        loaderOptions: {
+            css: {
+                modules: { localIdentName: '[name]-[hash]' },
+                localsConvention: 'camelCaseOnly'
+            }
+        }
+    },
     chainWebpack: webpackConfig => {
         if (!process.env.SSR) {
             webpackConfig.entry('app').clear().add('./src/entry-client.js')
@@ -14,6 +23,7 @@ module.exports = {
             webpackConfig.entry('app').clear().add('./src/entry-server.js')
             webpackConfig.target('node')
             webpackConfig.devtool('source-map')
+            webpackConfig.output.globalObject('this')
             webpackConfig.output.libraryTarget('commonjs2')
             webpackConfig.plugin('manifest').use(new ManifestPlugin({ fileName: 'ssr-manifest.json' }))
             webpackConfig.externals(NodeExternals({ allowlist: /\.(css|vue)$/ }))

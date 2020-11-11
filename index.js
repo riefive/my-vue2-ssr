@@ -45,6 +45,7 @@ if (target === 'spa') {
         }
         const [err, content] = await renderer.renderToString(context).then(v => [null, v]).catch(e => [e, null])
         if (err) {
+            console.log(err)
             if (err.code === 404) {
                 res.status(404).end(messages.notFound)
             } else {
