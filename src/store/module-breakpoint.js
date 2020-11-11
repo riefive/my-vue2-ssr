@@ -1,8 +1,8 @@
 export default {
     namespaced: true,
     state: {
-        name: 'xs',
-        orientation: 'portrait',
+        name: 'xs', // mobile: [xs, sm] | desktop: [md, lg, xl]
+        orientation: 'portrait', // portrait | landscape
         width: 0,
         height: 0
     },
