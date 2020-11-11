@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { get } from '@/libraries/util-object'
 import { screenOrientation } from '@/libraries/util-dom'
 
 export default {
@@ -20,7 +21,7 @@ export default {
     },
     computed: {
         componentName() {
-            return this.$store.state.layout.name || 'desktop-view'
+            return get(this.$store.state, 'layout.name') || 'desktop-view'
         }
     },
     beforeDestroy() {
