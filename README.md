@@ -34,6 +34,18 @@ build production
 $ yarn start:production
 ```
 
+### Libraries
+1. Util Object - instead of lodash
+- helper for object manipulation
+- reference [https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore]
+- available method: get, empty, has, omit, pick, pull
+2. Util Text
+- helper for text manipulation
+- available method: capitalize, camelCase, kebabCase, snakeCase, etc...
+3. Util Dom
+- helper for dom [client side only]
+- available method: screenOrientation, toggleFullScreen, userAgentInformation
+
 ### References
 I. Server side Rendering
 1. ssr.vuejs.org [http://ssr.vuejs.org]
