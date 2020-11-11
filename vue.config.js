@@ -29,5 +29,8 @@ module.exports = {
         plugins: [
             !process.env.SSR ? new VueSSRClientPlugin() : new VueSSRServerPlugin()
         ]
-    }
+    },
+    transpileDependencies: [
+        'vuex-persist'
+    ]
 }
