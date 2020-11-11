@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import { screenOrientation } from '@/libraries/util-dom'
+
 export default {
     beforeDestroy() {
         if (typeof window === 'undefined') { return false }
@@ -35,7 +37,7 @@ export default {
                 name = 'xl'
             }
             this.$store.dispatch('breakpoint/updateName', name)
-            // this.$store.dispatch('breakpoint/updateOrientation', screenOrientation())
+            this.$store.dispatch('breakpoint/updateOrientation', screenOrientation())
             this.$store.dispatch('breakpoint/updatePixels', { width, height })
         }
     }
