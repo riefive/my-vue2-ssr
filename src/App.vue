@@ -3,8 +3,10 @@
         <div id="nav">
             <router-link to="/">Home</router-link> |
             <router-link to="/about">About</router-link>
+            <div :is="componentName">
+                <router-view/>
+            </div>
         </div>
-        <router-view/>
     </div>
 </template>
 
@@ -12,9 +14,24 @@
 import { screenOrientation } from '@/libraries/util-dom'
 
 export default {
+    components: {
+        DesktopView: () => import('./layouts/Layout.vue'), 
+        MobileView: () => import('./layouts/LayoutMobile.vue')
+    },
+    computed: {
+        componentName() {
+            return this.$store.state.layout.name || 'desktop-view'
+        }
+    },
     beforeDestroy() {
         if (typeof window === 'undefined') { return false }
         window.removeEventListener('resize', this.onResize, { passive: true })
+    },
+    created() {
+        console.time('loading-time')
+        this.$nextTick(() => { 
+            console.timeEnd('loading-time')
+        })
     },
     mounted() {
         this.onResize()

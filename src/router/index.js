@@ -18,7 +18,7 @@ const router = new VueRouter({
         component: route.component,
         beforeEnter(to, from, next) {
             const breakpointName = store.state.breakpoint.name
-            store.dispatch('layout/updateName', ['xs', 'sm'].includes(breakpointName) ? 'mobile' : 'default')
+            store.dispatch('layout/updateName', ['xs', 'sm'].includes(breakpointName) ? 'mobile-view' : 'desktop-view')
             next()
         }
     }))

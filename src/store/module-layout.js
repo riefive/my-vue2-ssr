@@ -1,7 +1,7 @@
 export default {
     namespaced: true,
     state: {
-        name: 'default' // default (desktop) | mobile
+        name: 'desktop-view' // desktop-view | mobile-view
     },
     mutations: {
         changeName(state, value) {

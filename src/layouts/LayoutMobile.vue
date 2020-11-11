@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Mobile Layout</h1>
-        <router-view />
+        <slot />
     </div>
 </template>
 
