@@ -18,9 +18,18 @@ const project = Object.assign({
 })
 
 Object.assign(project, { dependencies: package.dependencies })
-const content = JSON.stringify(project, null, 4)
 const filedir = path.resolve(cwd, outputName, 'package.json')
 const mkdir = path.dirname(filedir)
+const content = JSON.stringify(project, null, 4)
+const readme = `
+# To running app
+$ yarn install
+$ export NODE_ENV=production && node index \n
+# Options env
+- development
+- production
+- staging
+`.trim()
 
 if (fs.existsSync(outputPath)) {
     rimraf(outputPath, (err) => { 
@@ -31,6 +40,7 @@ if (fs.existsSync(outputPath)) {
 setTimeout(() => {
     fs.mkdirSync(mkdir, { recursive:true })
     fs.writeFileSync(filedir, content)
+    fs.writeFileSync(path.resolve(cwd, outputName, 'README.md'), readme)
     cpx.copySync('./bundle/**', outputPath + '/bundle')
     cpx.copySync('./dist/**', outputPath + '/dist')
     cpx.copySync('./index.js', outputPath)
@@ -38,4 +48,4 @@ setTimeout(() => {
     cpx.copySync('./.env.development', outputPath)
     cpx.copySync('./.env.production', outputPath)
     cpx.copySync('./.env.staging', outputPath)
-}, 1000)
+}, 2500)
