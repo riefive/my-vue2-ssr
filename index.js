@@ -1,69 +1,20 @@
-const fs = require('fs')
 const path = require('path')
-const util = require('util')
 const express = require('express')
 const { createBundleRenderer } = require('vue-server-renderer')
+const { createLog } = require('./helpers/helper-debug')
+const { buildTag, buildTagArray } = require('./helpers/helper-tag-html')
+
 const cwd = process.cwd() || __dirname
 const env = process.env.NODE_ENV || 'development'
 const test = process.env.VUE_TEST || false
-
+const configFile = ['development', 'production', 'staging'].includes(env) ? `.env.${env}` : '.env'
 if (!test) {
-    let configFile = '.env'
-    if (['development', 'production', 'staging'].includes(env)) {
-        configFile = `.env.${env}`
-    }
     require('dotenv').config({ path: path.resolve(cwd, configFile) })
 }
 
+const server = express()
 const target = process.env.VUE_TARGET || 'spa'
 const title = process.env.TITLE
-
-// build atrribute
-const buildAttribute = (item, type) => {
-    let text = '<'.concat(type)
-    for (const key in item) {
-        const element = item[key]
-        text = text.concat(` ${key}="${element}"`)
-    }
-    text = text.concat('>')
-    if (type === 'script') { text = text.concat(`</${type}>`) }
-    return text
-}
-// build attribute with array
-const buildAttributeArrays = (data, type) => {
-    if (!Array.isArray(data)) { return '' }
-    let text = ''
-    data.forEach((item) => {
-        text = text.concat(buildAttribute(item, type)) + '\n'
-    })
-    return text
-} 
-// write log
-const logPath = 'debug.log'
-const logFile = fs.createWriteStream(path.resolve(cwd, logPath), { flags: 'a' })
-const logStdout = process.stdout
-const stats = fs.statSync(logPath)
-const fileSizeInBytes = stats.size
-const fileSizeInMegabytes = fileSizeInBytes / 1000000.0
-if (fileSizeInMegabytes > 50) {
-
-}
-
-const createLog = function () {
-    const args = Array.from(arguments)
-    const length = args.length
-    const key = length > 1 ? args[length - 1] : ''
-    const arrays = length > 1 ? args.slice(0, length - 1) : args
-    if (key.trim() !== '') {
-        logFile.write(`key: ${key}` + '\n')
-        logStdout.write(`key: ${key}` + '\n')
-    }
-    logFile.write(util.format.apply(null, arrays) + '\n')
-    logFile.write('-'.repeat(50) + '\n')
-    logStdout.write(util.format.apply(null, arrays) + '\n')
-}
-
-const server = express()
 const port = process.env.PORT || 3000
 const pretty = !['production', 'staging'].includes(env)
 const messages = {
@@ -88,26 +39,26 @@ if (target === 'spa') {
     let scripts = ''
     if (typeof clientManifest === 'object') {
         links = links.concat(
-            buildAttribute({ rel: 'icon', href: '/favicon.ico' }, 'link')
+            buildTag({ rel: 'icon', href: '/favicon.ico' }, 'link')
         )
         if (clientManifest.hasOwnProperty('async') && Array.isArray(clientManifest.async)) {
             const arrays = clientManifest.async
             links = links.concat('\n').concat(
-                buildAttributeArrays(arrays.map(v => ({ href: v, rel: 'prefetch' })), 'link')
+                buildTagArray(arrays.map(v => ({ href: v, rel: 'prefetch' })), 'link')
             )
         }
         if (clientManifest.hasOwnProperty('initial') && Array.isArray(clientManifest.initial)) {
             const arrays = clientManifest.initial
             arrays.reverse()
             links = links.concat(
-                buildAttributeArrays(arrays.map(v => ({ href: v, rel: 'preload', as: 'script' })), 'link')
+                buildTagArray(arrays.map(v => ({ href: v, rel: 'preload', as: 'script' })), 'link')
             )
             scripts = scripts.concat(
-                buildAttributeArrays(arrays.map(v => ({ type: 'text/javascript', src: v })), 'script')
+                buildTagArray(arrays.map(v => ({ type: 'text/javascript', src: v })), 'script')
             )
         }
     }
-    const metas = buildAttributeArrays([
+    const metas = buildTagArray([
         { charset: 'UTF-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
         { name: 'keyword', content: 'vue,ssr' },

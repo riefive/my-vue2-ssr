@@ -43,6 +43,7 @@ setTimeout(() => {
     fs.writeFileSync(path.resolve(cwd, outputName, 'README.md'), readme)
     cpx.copySync('./bundle/**', outputPath + '/bundle')
     cpx.copySync('./dist/**', outputPath + '/dist')
+    cpx.copySync('./helpers/**', outputPath + '/helpers')
     cpx.copySync('./index.js', outputPath)
     cpx.copySync('./.env', outputPath)
     cpx.copySync('./.env.development', outputPath)
