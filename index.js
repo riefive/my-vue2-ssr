@@ -36,6 +36,7 @@ if (target === 'spa') {
     })
     
     let links = ''
+    let styles = ''
     let scripts = ''
     if (typeof clientManifest === 'object') {
         links = links.concat(
@@ -49,13 +50,18 @@ if (target === 'spa') {
         }
         if (clientManifest.hasOwnProperty('initial') && Array.isArray(clientManifest.initial)) {
             const arrays = clientManifest.initial
+            arrays.sort((a, b) => {
+                if (a > b) { return 1 }
+                if (b > a) { return -1 }
+                return 0
+            })
+            const linkMaps = arrays.map(v => ({ href: v, rel: 'preload', as: /\.css$/.test(v) ? 'style' : 'script' }))
+            links = links.concat(buildTagArray(linkMaps, 'link'))
+            const styleMaps = arrays.filter(v => /\.css$/.test(v)).map(v => ({ href: v, rel: 'stylesheet' }))
+            styles = styles.concat(buildTagArray(styleMaps, 'link'))
             arrays.reverse()
-            links = links.concat(
-                buildTagArray(arrays.map(v => ({ href: v, rel: 'preload', as: 'script' })), 'link')
-            )
-            scripts = scripts.concat(
-                buildTagArray(arrays.map(v => ({ type: 'text/javascript', src: v })), 'script')
-            )
+            const scriptMaps = arrays.filter(v => /\.js$/.test(v)).map(v => ({ type: 'text/javascript', src: v }))
+            scripts = scripts.concat(buildTagArray(scriptMaps, 'script'))
         }
     }
     const metas = buildTagArray([
@@ -66,13 +72,7 @@ if (target === 'spa') {
     ], 'meta').trim()
 
     server.get('*', async (req, res) => {
-        const context = {
-            url: req.url,
-            title: 'Vue SSR',
-            metas,
-            links,
-            scripts
-        }
+        const context = { url: req.url, metas, links, styles, scripts }
         const [err, content] = await renderer.renderToString(context).then(v => [null, v]).catch(e => [e, null])
         if (err) {
             const errString = typeof err === 'object' ? JSON.stringify(err, null, 4) : err.toString()
@@ -87,11 +87,15 @@ if (target === 'spa') {
             <!DOCTYPE html>
             <html lang="en">
             <head>
-            <title>${title || context.title}</title>
+            <title>${title || 'Vue SSR'}</title>
             ${context.metas}
             ${context.links}
+            ${context.styles}
             </head>
             <body>
+            <noscript>
+            <strong>We're sorry but app doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+            </noscript>
             ${content}
             ${context.scripts}
             </body>
