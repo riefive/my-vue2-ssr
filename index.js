@@ -1,11 +1,9 @@
 const express = require('express')
 const path = require('path')
 const { createBundleRenderer } = require('vue-server-renderer')
-const env = process.env.NODE_ENV || 'development'
-const target = process.env.VUE_TARGET || 'spa'
-const test = process.env.VUE_TEST || false
-const title = process.env.TITLE
 const cwd = process.cwd() || __dirname
+const env = process.env.NODE_ENV || 'development'
+const test = process.env.VUE_TEST || false
 
 if (!test) {
     let configFile = '.env'
@@ -14,6 +12,9 @@ if (!test) {
     }
     require('dotenv').config({ path: path.resolve(cwd, configFile) })
 }
+
+const target = process.env.VUE_TARGET || 'spa'
+const title = process.env.TITLE
 
 const buildAttribute = (item, type) => {
     let text = '<'.concat(type)
