@@ -21,7 +21,7 @@ COPY yarn*.lock ./
 RUN export COMPRESS=false
 RUN export FILE=node_modules.tar.gz 
 RUN [ "$COMPRESS" = true ] && [ -f "$FILE" ] && \ 
-    (tar -zxvf node_modules.tar.gz > /dev/null 2>&1 && rm -rf node_modules.tar.gz) || echo "no compressed"
+    (tar -zxvf node_modules.tar.gz > /dev/null 2>&1 && rm -rf node_modules.tar.gz) || echo "uncompressed cancel"
 
 RUN yarn install --no-progress --frozen-lockfile
 
@@ -34,10 +34,10 @@ RUN node build
 
 # Compress node modules
 RUN [ "$COMPRESS" = true ] && \ 
-    tar -cvjf node_modules.tar.gz node_modules > /dev/null 2>&1
+    (tar -cvjf node_modules.tar.gz node_modules > /dev/null 2>&1) || echo "compressed cancel"
 
 # Remove all files except some files and directories
-RUN ls -a | grep -vP "node_modules*|package.json|yarn.lock|.appview" | xargs --no-run-if-empty rm -rf
+RUN ls -a | grep -v -P "node_modules*|package.json|yarn.lock|.appview" | xargs --no-run-if-empty rm -rf
 
 # Run app
 RUN cd .appview && yarn install --frozen-lockfile --production && node-clean
