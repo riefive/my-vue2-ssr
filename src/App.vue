@@ -29,10 +29,13 @@ export default {
         window.removeEventListener('resize', this.onResize, { passive: true })
     },
     created() {
-        console.time('loading-time')
-        this.$nextTick(() => { 
-            console.timeEnd('loading-time')
-        })
+        const env = process.env.VUE_APP_ENV || process.env.NODE_ENV
+        if (env === 'development') {
+            console.time('loading-time')
+            this.$nextTick(() => { 
+                console.timeEnd('loading-time')
+            })
+        }
     },
     mounted() {
         this.onResize()

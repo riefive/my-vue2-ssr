@@ -47,7 +47,7 @@ WORKDIR .appview
 ENV NODE_ENV development
 ENV PORT 4000
 ENV VUE_APP_TARGET ssr
-ENV VUE_APP_TITLE Vue SSR Sampe
+ENV VUE_APP_TITLE Vue SSR Sample
 
 EXPOSE 4000
 CMD [ "node", "index" ]
