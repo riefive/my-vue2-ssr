@@ -33,7 +33,7 @@ RUN node build
 RUN tar -cvjf node_modules.tar.gz node_modules
 
 # Remove all files except some files and directories
-# RUN rm -rf '!(package*.json|yarn*.lock|node_modules*.tar.gz|.appview)'
+RUN rm -rf '!(package*.json|yarn*.lock|node_modules*.tar.gz|.appview)'
 
 # Run app
 RUN cd .appview && yarn install --frozen-lockfile --production && node-clean
@@ -41,4 +41,4 @@ WORKDIR /.appview
 ENV NODE_ENV development
 
 EXPOSE 4000
-CMD [ "node", "index" ]s
+CMD [ "node", "index" ]
