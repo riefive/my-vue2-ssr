@@ -25,6 +25,9 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### How to install or running
 ```
+- copy
+$ git clone https://github.com/riefive/my-vue2-ssr.git [project_name]
+$ cd [project_name]
 - initialized
 $ yarn install 
 $ yarn build
