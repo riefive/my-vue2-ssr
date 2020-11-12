@@ -3,7 +3,7 @@ npm-debug*
 bundle
 dist
 .appview
-.env.test*
+.env*
 .browserslistrc
 .editorconfig
 .git
