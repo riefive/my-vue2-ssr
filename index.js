@@ -3,19 +3,14 @@ const express = require('express')
 const { createBundleRenderer } = require('vue-server-renderer')
 const { createLog } = require('./helpers/helper-debug')
 const { buildTag, buildTagArray } = require('./helpers/helper-tag-html')
-
-const cwd = process.cwd() || __dirname
-const env = process.env.NODE_ENV || 'development'
-const skip = process.env.SKIP || false
-const configFile = ['development', 'production', 'staging'].includes(env) ? `.env.${env}` : '.env'
-if (!skip) {
-    require('dotenv').config({ path: path.resolve(cwd, configFile) })
-}
+require('dotenv').config()
 
 const server = express()
-const target = process.env.TARGET || 'spa'
-const title = process.env.TITLE
+const cwd = process.cwd() || __dirname
+const env = process.env.NODE_ENV || 'development'
 const port = process.env.PORT || 3000
+const target = process.env.VUE_APP_TARGET || 'spa'
+const title = process.env.VUE_APP_TITLE || `Vue  ${target.toUpperCase()}`
 const pretty = !['production', 'staging'].includes(env)
 const messages = {
     notFound: 'Page not found',
@@ -87,7 +82,7 @@ if (target === 'spa') {
             <!DOCTYPE html>
             <html lang="en">
             <head>
-            <title>${title || 'Vue SSR'}</title>
+            <title>${title}</title>
             ${context.metas}
             ${context.links}
             ${context.styles}
