@@ -42,6 +42,8 @@ RUN ls -a | grep -v -P "node_modules*|package.json|yarn.lock|.appview" | xargs -
 # Run app
 RUN cd .appview && yarn install --frozen-lockfile --production && node-clean
 WORKDIR .appview
+
+# Setting Env
 ENV NODE_ENV development
 ENV PORT 4000
 ENV VUE_APP_TARGET ssr
