@@ -18,11 +18,12 @@ COPY package*.json ./
 COPY yarn*.lock ./
 
 # Check node_modules compressed file and Install library
-RUN export FILE=node_modules.tar.gz && [ -f "$FILE" ] && \
-    (tar -zxvf node_modules.tar.gz > /dev/null 2>&1 && rm -rf node_modules.tar.gz  ) || echo "no compressed" && \
-    yarn install --no-progress --frozen-lockfile
+RUN export COMPRESS=false
+RUN export FILE=node_modules.tar.gz 
+RUN [ "$COMPRESS" = true ] && [ -f "$FILE" ] && \ 
+    (tar -zxvf node_modules.tar.gz > /dev/null 2>&1 && rm -rf node_modules.tar.gz) || echo "no compressed"
 
-RUN yarn install --no-progress
+RUN yarn install --no-progress --frozen-lockfile
 
 # Bundle app source
 COPY . .
@@ -32,10 +33,11 @@ RUN yarn build
 RUN node build
 
 # Compress node modules
-RUN tar -cvjf node_modules.tar.gz node_modules > /dev/null 2>&1
+RUN [ "$COMPRESS" = true ] && \ 
+    tar -cvjf node_modules.tar.gz node_modules > /dev/null 2>&1
 
 # Remove all files except some files and directories
-RUN ls | grep -v "package*.json" | grep -v "yarn*.lock" | grep -v "node_modules*.tar.gz" | xargs --no-run-if-empty rm -rf
+RUN ls -a | grep -vP "node_modules*|package.json|yarn.lock|.appview" | xargs --no-run-if-empty rm -rf
 
 # Run app
 RUN cd .appview && yarn install --frozen-lockfile --production && node-clean
