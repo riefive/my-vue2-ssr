@@ -43,6 +43,9 @@ RUN ls -a | grep -v -P "node_modules*|package.json|yarn.lock|.appview" | xargs -
 RUN cd .appview && yarn install --frozen-lockfile --production && node-clean
 WORKDIR .appview
 ENV NODE_ENV development
+ENV PORT 4000
+ENV VUE_APP_TARGET ssr
+ENV VUE_APP_TITLE Vue SSR Sampe
 
 EXPOSE 4000
 CMD [ "node", "index" ]
