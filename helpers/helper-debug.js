@@ -14,9 +14,12 @@ const logFile = fs.createWriteStream(path.resolve(cwd, logPath), { flags: 'a' })
 const logStdout = process.stdout
 
 // filesize config
-const stats = fs.statSync(logPath)
-const fileSizeInBytes = stats.size
-const fileSizeInMegabytes = fileSizeInBytes / 1000000.0
+let fileSizeInMegabytes = 0
+if (fs.existsSync(logPath)) {
+    const stats = fs.statSync(logPath)
+    const fileSizeInBytes = stats.size
+    fileSizeInMegabytes = fileSizeInBytes / 1000000.0
+}
 
 // compress config
 const gzip = zlib.createGzip()
