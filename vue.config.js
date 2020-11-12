@@ -1,5 +1,4 @@
 const path = require('path')
-const ManifestPlugin = require('webpack-manifest-plugin')
 const NodeExternals = require('webpack-node-externals')
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
@@ -16,7 +15,6 @@ module.exports = {
             webpackConfig.devtool('source-map')
             webpackConfig.output.globalObject('this')
             webpackConfig.output.libraryTarget('commonjs2')
-            webpackConfig.plugin('manifest').use(new ManifestPlugin({ fileName: 'ssr-manifest.json' }))
             webpackConfig.externals(NodeExternals({ allowlist: /\.(css|vue)$/ }))
             webpackConfig.optimization.splitChunks(false).minimize(false)
             webpackConfig.plugins.delete('hmr')
