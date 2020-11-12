@@ -11,7 +11,7 @@
     "run:spa": "dotenv -e .env.test.spa node index",
     "run:ssr": "dotenv -e .env.test.ssr node index",
     "start:dev": "dotenv -e .env node index",
-    "start:production": "node build && cd .appview && yarn install --production=true && export NODE_ENV=production && node index",
+    "start:production": "node build && cd .appview && yarn install --production && export NODE_ENV=production && node index",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {

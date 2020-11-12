@@ -6,14 +6,14 @@ const { buildTag, buildTagArray } = require('./helpers/helper-tag-html')
 
 const cwd = process.cwd() || __dirname
 const env = process.env.NODE_ENV || 'development'
-const test = process.env.VUE_TEST || false
+const skip = process.env.SKIP || false
 const configFile = ['development', 'production', 'staging'].includes(env) ? `.env.${env}` : '.env'
-if (!test) {
+if (!skip) {
     require('dotenv').config({ path: path.resolve(cwd, configFile) })
 }
 
 const server = express()
-const target = process.env.VUE_TARGET || 'spa'
+const target = process.env.TARGET || 'spa'
 const title = process.env.TITLE
 const port = process.env.PORT || 3000
 const pretty = !['production', 'staging'].includes(env)
