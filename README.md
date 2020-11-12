@@ -1,4 +1,4 @@
-# vue2-example-ssr
+# My Vue2 SSR
 
 ## Project setup
 ```
